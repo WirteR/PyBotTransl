@@ -4,7 +4,7 @@ from telegram.ext import MessageHandler, Filters
 from googletrans import Translator
 import logging
 
-tok = '754612549:AAEewg5s00ru_8QdPAt2GvpFH4GsaU7cSL0'
+tok = '731565223:AAFMQr3wREQFrhU6Zd0k3LLJkWdhCbyZh_8'
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
 res = 'en'
@@ -31,14 +31,14 @@ def choose(bot, update):
         bot.send_message(chat_id = update.message.chat_id, text="Виберіть потрібну мову:", reply_markup=reply_markup)
 
     elif update.message.text == 'English':
-            bot.send_message(chat_id = update.message.chat_id, text="Мову змінено на англійську!")
+            bot.send_message(chat_id = update.message.chat_id, text="Мову змінено на англійську!", reply_markup=telegram.ReplyKeyboardRemove())
             res = 'en'
 
     elif update.message.text == 'Deutech':
-            bot.send_message(chat_id = update.message.chat_id, text="Мову змінено на німецьку!")
+            bot.send_message(chat_id = update.message.chat_id, text="Мову змінено на німецьку!", reply_markup=telegram.ReplyKeyboardRemove())
             res = 'de'
     elif update.message.text == 'France':
-            bot.send_message(chat_id = update.message.chat_id, text="Мову змінено на французьку!")
+            bot.send_message(chat_id = update.message.chat_id, text="Мову змінено на французьку!", reply_markup=telegram.ReplyKeyboardRemove())
             res = 'fr'
     else:
         returning = str(update.message.text)
