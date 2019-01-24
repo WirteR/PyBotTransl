@@ -6,7 +6,7 @@ import logging
 
 import botfuncs as funcs
 
-tok = '731565223:AAFMQr3wREQFrhU6Zd0k3LLJkWdhCbyZh_8'
+tok = '754612549:AAEewg5s00ru_8QdPAt2GvpFH4GsaU7cSL0'
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
 
