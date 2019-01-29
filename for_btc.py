@@ -2,6 +2,10 @@ import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from coinmarketcap import Market
 
+import requests
+from bs4 import BeautifulSoup
+
+
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
@@ -60,14 +64,41 @@ def button(bot, update):
 
     if query.data in values:
         var = query.data
-        kboard = [[InlineKeyboardButton("Назад", callback_data='2'),]]
+        kboard = [[InlineKeyboardButton("Назад", callback_data='2'),InlineKeyboardButton("На головну", callback_data='0')]]
         new_keyboard = InlineKeyboardMarkup(kboard)
-        bot.editMessageText(text="Ви вибрали "+str(var),
+
+        site = 'https://myfin.by/crypto-rates/'
+        if str(var) == 'XRP':
+            site = 'https://myfin.by/crypto-rates/ripple'
+        else:
+            site += str(var).lower()
+
+        markets = parse(get_html(site))
+        result_markets = '\n'.join(markets)
+
+        bot.editMessageText(text="Активні біржі для криптовалюти "+str(var)+':\n'+result_markets,
                             chat_id=query.message.chat_id,
                             message_id=query.message.message_id,
                             reply_markup=new_keyboard)
 
 
+
+def get_html(site):
+    r = requests.get(site)
+    return r.text
+
+def parse(html):
+    soup = BeautifulSoup(html, 'lxml')
+
+    line = soup.find('div', id="crypto_exchange").find('table', class_='items').find('tbody').find_all('tr')
+
+    markets = []
+
+    for tr in line:
+        td = tr.find_all('td')
+        markets.append(td[0].text[:-16])
+
+    return markets
 
 
 def error(bot, update, error):

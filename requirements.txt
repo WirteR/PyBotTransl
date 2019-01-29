@@ -1,3 +1,5 @@
 python-telegram-bot
 googletrans
 coinmarketcap
+requests
+beautifulsoup4
