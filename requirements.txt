@@ -3,3 +3,4 @@ googletrans
 coinmarketcap
 requests
 bs4
+lxml
