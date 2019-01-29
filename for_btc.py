@@ -11,6 +11,23 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 values = []
 
+def get_html(site):
+    r = requests.get(site)
+    return r.text
+
+def parse(html):
+    soup = BeautifulSoup(html, 'lxml')
+
+    line = soup.find('div', id="crypto_exchange").find('table', class_='items').find('tbody').find_all('tr')
+
+    markets = []
+
+    for tr in line:
+        td = tr.find_all('td')
+        markets.append(td[0].text[:-16])
+
+    return markets
+
 def gettin(bot, update):
     keyboard = [[InlineKeyboardButton("Ціна бітка", callback_data='1'),
                  InlineKeyboardButton("Топ 5", callback_data='2')]]
@@ -81,24 +98,6 @@ def button(bot, update):
                             message_id=query.message.message_id,
                             reply_markup=new_keyboard)
 
-
-
-def get_html(site):
-    r = requests.get(site)
-    return r.text
-
-def parse(html):
-    soup = BeautifulSoup(html, 'lxml')
-
-    line = soup.find('div', id="crypto_exchange").find('table', class_='items').find('tbody').find_all('tr')
-
-    markets = []
-
-    for tr in line:
-        td = tr.find_all('td')
-        markets.append(td[0].text[:-16])
-
-    return markets
 
 
 def error(bot, update, error):
