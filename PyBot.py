@@ -30,8 +30,10 @@ if __name__ == "__main__":
     disp.add_handler(get_handler)
     disp.add_handler(helper_handler)
     disp.add_handler(settings_handler)
+
     disp.add_handler(CallbackQueryHandler(btc.button))
     disp.add_error_handler(btc.error)
+
     disp.add_handler(unknown_handler)
 
 

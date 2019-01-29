@@ -1,4 +1,6 @@
 import logging
+from typing import List, Any
+
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from coinmarketcap import Market
 
@@ -90,8 +92,8 @@ def button(bot, update):
         else:
             site += str(var).lower()
 
-        markets = parse(get_html(site))
-        result_markets = '\n'.join(markets)
+        new_markets = parse(get_html(site))
+        result_markets = '\n'.join(new_markets)
 
         bot.editMessageText(text="Активні біржі для криптовалюти "+str(var)+':\n'+result_markets,
                             chat_id=query.message.chat_id,
