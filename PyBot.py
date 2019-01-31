@@ -10,7 +10,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, Rege
 
 import logging
 
-tok = '768225429:AAGoG3ZJ8CyvF529z2rw0n8Gw01ZO7QprFE'
+tok = '754612549:AAEewg5s00ru_8QdPAt2GvpFH4GsaU7cSL0'
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
 
