@@ -102,7 +102,10 @@ def set_regime(bot, update, user_data):
 
 
 def unknown(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text="Вибачте, команди не існує")
+    if update.message.text == '/settings':
+        bot.send_message(chat_id=update.message.chat_id, text="Ви вже вибрали налаштування")
+    else:
+        bot.send_message(chat_id=update.message.chat_id, text="Вибачте, команди не існує")
 
 
 
