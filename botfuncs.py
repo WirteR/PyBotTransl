@@ -20,6 +20,8 @@ markap = ReplyKeyboardMarkup([['Відображення в режимі inline'
 def start(bot, update, user_data):
     bot.send_message(chat_id=update.message.chat_id,
                      text="Цей бот призначений для швидкого перекладу ваших слів на англійську. ")
+    user_data['lan'] = 'en'
+    user_data['btc'] = 'reply'
 
 
 def helper(bot, update):
@@ -33,20 +35,21 @@ def get_lan(user_data):
 
 def settings(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="Виберіть налаштування:", reply_markup=markup)
-    return CHOOSE
+    return LAST
 
 
-def last(bot, update):
+def last(bot, update, user_data):
     reply_keyboard = [['English'], ['Deutech'], ['France']]
+    user_data['langs'] = reply_keyboard
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     bot.send_message(chat_id=update.message.chat_id, text="Виберіть потрібну мову:", reply_markup=markup)
 
-    return LAST
+    return CHOOSE
 
 
 def choose(bot, update, user_data):
     text = update.message.text
-
+    #if text in user_data['langs']:
     if text == 'France':
         user_data['lan'] = 'fr'
 
@@ -57,12 +60,15 @@ def choose(bot, update, user_data):
         user_data['lan'] = 'en'
 
     update.message.reply_text('Ви вибрали ' + text, reply_markup=markup)
+    return LAST
 
-    return CHOOSE
+    #else:
+        #update.message.reply_text('Невідома команда', reply_markup=user_data['langs'])
+        #return CHOOSE
 
 
 def cancel(bot, update):
-    update.message.reply_text('Ви вийшли з налайтувань')
+    update.message.reply_text('Ви вийшли з налаштувань')
     return ConversationHandler.END
 
 
@@ -72,15 +78,11 @@ def get(bot, update, user_data):
 
 def transl(bot, update, user_data):
     returning = str(update.message.text)
-    if user_data:
+    try:
         result = translator.translate(returning, dest=user_data['lan'])
         bot.send_message(chat_id=update.message.chat_id, text=result.text)
-        user_data['btc'] = 'inline'
-
-    else:
-        user_data['lan'] = 'en'
-        user_data['btc'] = 'inline'
-
+    except KeyError:
+        bot.send_message(chat_id=update.message.chat_id, text="Виберіть мову перекладу в налаштуваннях")
 
 def choose_regime(bot, update):
     update.message.reply_text('Виберіть режим: ', reply_markup=markap)
@@ -96,14 +98,19 @@ def set_regime(bot, update, user_data):
 
     update.message.reply_text('Ви перейшли в режим ' + user_data['btc'], reply_markup=markup)
 
-    return CHOOSE
+    return LAST
 
-
+def cnc(bot, update):
+    pass
 
 
 def unknown(bot, update):
     if update.message.text == '/settings':
         bot.send_message(chat_id=update.message.chat_id, text="Ви вже вибрали налаштування")
+
+    elif update.message.text == '/get_crypto':
+        bot.send_message(chat_id=update.message.chat_id, text="Ви вже в режимі криптовалют")
+
     else:
         bot.send_message(chat_id=update.message.chat_id, text="Вибачте, команди не існує")
 
@@ -111,13 +118,14 @@ def unknown(bot, update):
 
 conv_handler = ConversationHandler(entry_points=[CommandHandler('settings', settings)],
                                    states={
-                                       CHOOSE: [RegexHandler('^Вибір мови$', last),
-                                                RegexHandler('^Криптовалютний режим$', choose_regime)],
+                                       LAST: [RegexHandler('^Вибір мови$', last, pass_user_data=True),
+                                                RegexHandler('^Криптовалютний режим$', choose_regime),
+                                                RegexHandler('^Вихід$', cancel)],
 
-                                       LAST: [RegexHandler('^(English|Deutech|France)$', choose, pass_user_data=True)],
+                                       CHOOSE: [RegexHandler('^(English|Deutech|France)$', choose, pass_user_data=True)],
 
                                        CHANGE: [RegexHandler('^(Відображення в режимі inline|Відображення в режимі клавіатури)$', set_regime,
                                                 pass_user_data=True)]
                                    },
-                                   fallbacks=[RegexHandler('^Вихід$', cancel)]
+                                   fallbacks=[]
                                    )
